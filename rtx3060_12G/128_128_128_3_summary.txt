@@ -1,0 +1,204 @@
+Model: "model"
+__________________________________________________________________________________________________
+ Layer (type)                   Output Shape         Param #     Connected to                     
+==================================================================================================
+ input_1 (InputLayer)           [(None, 128, 128, 1  0           []                               
+                                28, 1)]                                                           
+                                                                                                  
+ conv3d (Conv3D)                (None, 128, 128, 12  448         ['input_1[0][0]']                
+                                8, 16)                                                            
+                                                                                                  
+ batch_normalization (BatchNorm  (None, 128, 128, 12  64         ['conv3d[0][0]']                 
+ alization)                     8, 16)                                                            
+                                                                                                  
+ leaky_re_lu (LeakyReLU)        (None, 128, 128, 12  0           ['batch_normalization[0][0]']    
+                                8, 16)                                                            
+                                                                                                  
+ conv3d_1 (Conv3D)              (None, 128, 128, 12  6928        ['leaky_re_lu[0][0]']            
+                                8, 16)                                                            
+                                                                                                  
+ batch_normalization_1 (BatchNo  (None, 128, 128, 12  64         ['conv3d_1[0][0]']               
+ rmalization)                   8, 16)                                                            
+                                                                                                  
+ leaky_re_lu_1 (LeakyReLU)      (None, 128, 128, 12  0           ['batch_normalization_1[0][0]']  
+                                8, 16)                                                            
+                                                                                                  
+ conv3d_2 (Conv3D)              (None, 128, 128, 12  6928        ['leaky_re_lu_1[0][0]']          
+                                8, 16)                                                            
+                                                                                                  
+ batch_normalization_2 (BatchNo  (None, 128, 128, 12  64         ['conv3d_2[0][0]']               
+ rmalization)                   8, 16)                                                            
+                                                                                                  
+ leaky_re_lu_2 (LeakyReLU)      (None, 128, 128, 12  0           ['batch_normalization_2[0][0]']  
+                                8, 16)                                                            
+                                                                                                  
+ add (Add)                      (None, 128, 128, 12  0           ['leaky_re_lu[0][0]',            
+                                8, 16)                            'leaky_re_lu_2[0][0]']          
+                                                                                                  
+ conv3d_3 (Conv3D)              (None, 64, 64, 64,   13856       ['add[0][0]']                    
+                                32)                                                               
+                                                                                                  
+ batch_normalization_3 (BatchNo  (None, 64, 64, 64,   128        ['conv3d_3[0][0]']               
+ rmalization)                   32)                                                               
+                                                                                                  
+ leaky_re_lu_3 (LeakyReLU)      (None, 64, 64, 64,   0           ['batch_normalization_3[0][0]']  
+                                32)                                                               
+                                                                                                  
+ conv3d_4 (Conv3D)              (None, 64, 64, 64,   27680       ['leaky_re_lu_3[0][0]']          
+                                32)                                                               
+                                                                                                  
+ batch_normalization_4 (BatchNo  (None, 64, 64, 64,   128        ['conv3d_4[0][0]']               
+ rmalization)                   32)                                                               
+                                                                                                  
+ leaky_re_lu_4 (LeakyReLU)      (None, 64, 64, 64,   0           ['batch_normalization_4[0][0]']  
+                                32)                                                               
+                                                                                                  
+ conv3d_5 (Conv3D)              (None, 64, 64, 64,   27680       ['leaky_re_lu_4[0][0]']          
+                                32)                                                               
+                                                                                                  
+ batch_normalization_5 (BatchNo  (None, 64, 64, 64,   128        ['conv3d_5[0][0]']               
+ rmalization)                   32)                                                               
+                                                                                                  
+ leaky_re_lu_5 (LeakyReLU)      (None, 64, 64, 64,   0           ['batch_normalization_5[0][0]']  
+                                32)                                                               
+                                                                                                  
+ add_1 (Add)                    (None, 64, 64, 64,   0           ['leaky_re_lu_3[0][0]',          
+                                32)                               'leaky_re_lu_5[0][0]']          
+                                                                                                  
+ conv3d_6 (Conv3D)              (None, 32, 32, 32,   55360       ['add_1[0][0]']                  
+                                64)                                                               
+                                                                                                  
+ batch_normalization_6 (BatchNo  (None, 32, 32, 32,   256        ['conv3d_6[0][0]']               
+ rmalization)                   64)                                                               
+                                                                                                  
+ leaky_re_lu_6 (LeakyReLU)      (None, 32, 32, 32,   0           ['batch_normalization_6[0][0]']  
+                                64)                                                               
+                                                                                                  
+ conv3d_7 (Conv3D)              (None, 32, 32, 32,   110656      ['leaky_re_lu_6[0][0]']          
+                                64)                                                               
+                                                                                                  
+ batch_normalization_7 (BatchNo  (None, 32, 32, 32,   256        ['conv3d_7[0][0]']               
+ rmalization)                   64)                                                               
+                                                                                                  
+ leaky_re_lu_7 (LeakyReLU)      (None, 32, 32, 32,   0           ['batch_normalization_7[0][0]']  
+                                64)                                                               
+                                                                                                  
+ conv3d_8 (Conv3D)              (None, 32, 32, 32,   110656      ['leaky_re_lu_7[0][0]']          
+                                64)                                                               
+                                                                                                  
+ batch_normalization_8 (BatchNo  (None, 32, 32, 32,   256        ['conv3d_8[0][0]']               
+ rmalization)                   64)                                                               
+                                                                                                  
+ leaky_re_lu_8 (LeakyReLU)      (None, 32, 32, 32,   0           ['batch_normalization_8[0][0]']  
+                                64)                                                               
+                                                                                                  
+ add_2 (Add)                    (None, 32, 32, 32,   0           ['leaky_re_lu_6[0][0]',          
+                                64)                               'leaky_re_lu_8[0][0]']          
+                                                                                                  
+ up_sampling3d (UpSampling3D)   (None, 64, 64, 64,   0           ['add_2[0][0]']                  
+                                64)                                                               
+                                                                                                  
+ conv3d_9 (Conv3D)              (None, 64, 64, 64,   55328       ['up_sampling3d[0][0]']          
+                                32)                                                               
+                                                                                                  
+ batch_normalization_9 (BatchNo  (None, 64, 64, 64,   128        ['conv3d_9[0][0]']               
+ rmalization)                   32)                                                               
+                                                                                                  
+ leaky_re_lu_9 (LeakyReLU)      (None, 64, 64, 64,   0           ['batch_normalization_9[0][0]']  
+                                32)                                                               
+                                                                                                  
+ concatenate (Concatenate)      (None, 64, 64, 64,   0           ['leaky_re_lu_9[0][0]',          
+                                64)                               'add_1[0][0]']                  
+                                                                                                  
+ conv3d_10 (Conv3D)             (None, 64, 64, 64,   55328       ['concatenate[0][0]']            
+                                32)                                                               
+                                                                                                  
+ batch_normalization_10 (BatchN  (None, 64, 64, 64,   128        ['conv3d_10[0][0]']              
+ ormalization)                  32)                                                               
+                                                                                                  
+ leaky_re_lu_10 (LeakyReLU)     (None, 64, 64, 64,   0           ['batch_normalization_10[0][0]'] 
+                                32)                                                               
+                                                                                                  
+ conv3d_11 (Conv3D)             (None, 64, 64, 64,   27680       ['leaky_re_lu_10[0][0]']         
+                                32)                                                               
+                                                                                                  
+ batch_normalization_11 (BatchN  (None, 64, 64, 64,   128        ['conv3d_11[0][0]']              
+ ormalization)                  32)                                                               
+                                                                                                  
+ leaky_re_lu_11 (LeakyReLU)     (None, 64, 64, 64,   0           ['batch_normalization_11[0][0]'] 
+                                32)                                                               
+                                                                                                  
+ up_sampling3d_2 (UpSampling3D)  (None, 128, 128, 12  0          ['leaky_re_lu_11[0][0]']         
+                                8, 32)                                                            
+                                                                                                  
+ conv3d_13 (Conv3D)             (None, 128, 128, 12  13840       ['up_sampling3d_2[0][0]']        
+                                8, 16)                                                            
+                                                                                                  
+ batch_normalization_13 (BatchN  (None, 128, 128, 12  64         ['conv3d_13[0][0]']              
+ ormalization)                  8, 16)                                                            
+                                                                                                  
+ leaky_re_lu_13 (LeakyReLU)     (None, 128, 128, 12  0           ['batch_normalization_13[0][0]'] 
+                                8, 16)                                                            
+                                                                                                  
+ concatenate_1 (Concatenate)    (None, 128, 128, 12  0           ['leaky_re_lu_13[0][0]',         
+                                8, 32)                            'add[0][0]']                    
+                                                                                                  
+ conv3d_14 (Conv3D)             (None, 128, 128, 12  13840       ['concatenate_1[0][0]']          
+                                8, 16)                                                            
+                                                                                                  
+ batch_normalization_14 (BatchN  (None, 128, 128, 12  64         ['conv3d_14[0][0]']              
+ ormalization)                  8, 16)                                                            
+                                                                                                  
+ leaky_re_lu_14 (LeakyReLU)     (None, 128, 128, 12  0           ['batch_normalization_14[0][0]'] 
+                                8, 16)                                                            
+                                                                                                  
+ conv3d_15 (Conv3D)             (None, 128, 128, 12  6928        ['leaky_re_lu_14[0][0]']         
+                                8, 16)                                                            
+                                                                                                  
+ batch_normalization_15 (BatchN  (None, 128, 128, 12  64         ['conv3d_15[0][0]']              
+ ormalization)                  8, 16)                                                            
+                                                                                                  
+ leaky_re_lu_15 (LeakyReLU)     (None, 128, 128, 12  0           ['batch_normalization_15[0][0]'] 
+                                8, 16)                                                            
+                                                                                                  
+ conv3d_12 (Conv3D)             (None, 64, 64, 64,   865         ['leaky_re_lu_11[0][0]']         
+                                1)                                                                
+                                                                                                  
+ conv3d_16 (Conv3D)             (None, 128, 128, 12  433         ['leaky_re_lu_15[0][0]']         
+                                8, 1)                                                             
+                                                                                                  
+ batch_normalization_12 (BatchN  (None, 64, 64, 64,   4          ['conv3d_12[0][0]']              
+ ormalization)                  1)                                                                
+                                                                                                  
+ batch_normalization_16 (BatchN  (None, 128, 128, 12  4          ['conv3d_16[0][0]']              
+ ormalization)                  8, 1)                                                             
+                                                                                                  
+ leaky_re_lu_12 (LeakyReLU)     (None, 64, 64, 64,   0           ['batch_normalization_12[0][0]'] 
+                                1)                                                                
+                                                                                                  
+ leaky_re_lu_16 (LeakyReLU)     (None, 128, 128, 12  0           ['batch_normalization_16[0][0]'] 
+                                8, 1)                                                             
+                                                                                                  
+ up_sampling3d_1 (UpSampling3D)  (None, 128, 128, 12  0          ['leaky_re_lu_12[0][0]']         
+                                8, 1)                                                             
+                                                                                                  
+ add_3 (Add)                    (None, 128, 128, 12  0           ['leaky_re_lu_16[0][0]',         
+                                8, 1)                             'up_sampling3d_1[0][0]']        
+                                                                                                  
+ conv3d_17 (Conv3D)             (None, 128, 128, 12  28          ['add_3[0][0]']                  
+                                8, 1)                                                             
+                                                                                                  
+ batch_normalization_17 (BatchN  (None, 128, 128, 12  4          ['conv3d_17[0][0]']              
+ ormalization)                  8, 1)                                                             
+                                                                                                  
+ leaky_re_lu_17 (LeakyReLU)     (None, 128, 128, 12  0           ['batch_normalization_17[0][0]'] 
+                                8, 1)                                                             
+                                                                                                  
+ softmax (Activation)           (None, 128, 128, 12  0           ['leaky_re_lu_17[0][0]']         
+                                8, 1)                                                             
+                                                                                                  
+==================================================================================================
+Total params: 536,394
+Trainable params: 535,428
+Non-trainable params: 966
+__________________________________________________________________________________________________

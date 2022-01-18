@@ -22,27 +22,24 @@ FILTER_GROW = True
 DEEP_SUPERVISION = True
 NUM_CLASS = 1
 
-def surface_loss(true,pred):
-    b_true = true[...,0]
-    b_pred = pred[...,0]
-    f_true = 1 - true[...,0]
-    f_pred = 1 - pred[...,0]
+def diceloss(true,pred):
+    acc=0
+    elements_per_class=tf.math.reduce_sum(y_true)
+    predicted_per_class=tf.math.reduce_sum(y_pred)
+    intersection=tf.math.scalar_mul(2.0,tf.math.reduce_sum(tf.math.multiply(y_pred,y_true)))
+    union=elements_per_class+predicted_per_class
+    acc+=intersection/(union+0.000001)
+    return 1.0-acc/2
 
-    true_map = b_true - f_true
-    multiplied = f_pred * true_map
 
-    return tf.math.reduce_mean(multiplied)
-
-def sdice(true, pred):
-    b_true = true[...,0]
-    b_pred = pred[...,0]
-    f_true = 1 - true[...,0]
-    f_pred = 1 - pred[...,0]
-
-    true_map = f_true - b_true
-    multiplied = f_pred * true_map
-
-    return tf.math.reduce_mean(multiplied)
+def dice(true, pred):
+    acc=0
+    elements_per_class=tf.math.reduce_sum(y_true)
+    predicted_per_class=tf.math.reduce_sum(y_pred)
+    intersection=tf.math.scalar_mul(2.0,tf.math.reduce_sum(tf.math.multiply(y_pred,y_true)))
+    union=elements_per_class+predicted_per_class
+    acc+=intersection/(union+0.000001)
+    return 1.0-acc/2
 
 def myConv(x_in, nf, strides=1, kernel_size = 3):
     """
@@ -172,9 +169,9 @@ def main():
     tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1, profile_batch = '50,52')
 
     m.compile(
-            loss=surface_loss,
+            loss=diceloss,
             optimizer=adamlr, 
-            metrics=[sdice])
+            metrics=[dice])
 
     try:
         history=m.fit(

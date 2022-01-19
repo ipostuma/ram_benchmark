@@ -24,9 +24,9 @@ NUM_CLASS = 1
 
 def diceloss(true,pred):
     acc=0
-    elements_per_class=tf.math.reduce_sum(y_true)
-    predicted_per_class=tf.math.reduce_sum(y_pred)
-    intersection=tf.math.scalar_mul(2.0,tf.math.reduce_sum(tf.math.multiply(y_pred,y_true)))
+    elements_per_class=tf.math.reduce_sum(true)
+    predicted_per_class=tf.math.reduce_sum(pred)
+    intersection=tf.math.scalar_mul(2.0,tf.math.reduce_sum(tf.math.multiply(pred,true)))
     union=elements_per_class+predicted_per_class
     acc+=intersection/(union+0.000001)
     return 1.0-acc/2
@@ -34,9 +34,9 @@ def diceloss(true,pred):
 
 def dice(true, pred):
     acc=0
-    elements_per_class=tf.math.reduce_sum(y_true)
-    predicted_per_class=tf.math.reduce_sum(y_pred)
-    intersection=tf.math.scalar_mul(2.0,tf.math.reduce_sum(tf.math.multiply(y_pred,y_true)))
+    elements_per_class=tf.math.reduce_sum(true)
+    predicted_per_class=tf.math.reduce_sum(pred)
+    intersection=tf.math.scalar_mul(2.0,tf.math.reduce_sum(tf.math.multiply(pred,true)))
     union=elements_per_class+predicted_per_class
     acc+=intersection/(union+0.000001)
     return 1.0-acc/2
@@ -120,7 +120,14 @@ def main():
                         help='depth of the 3D unet model')
     parser.add_argument('--epochs', type=int,
                         help='number of training epochs')
+    parser.add_argument('--distributed', action='store_true',help="if used the computation is distributed on multiple GPUs")
     args = parser.parse_args()
+
+    distributed=False
+    if args.distributed:
+        distributed=True
+        strategy = tf.distribute.experimental.CentralStorageStrategy()#MirroredStrategy()
+        print('Number of devices: {}'.format(strategy.num_replicas_in_sync))
 
     epochs = 10
     if args.epochs:
@@ -134,27 +141,20 @@ def main():
 
     filename = "{}_{}_{}_{}".format(xs,ys,zs,depth)
 
-    try:
-        m = unet3d((xs,ys,zs,1),depth)
-    except:
-        return "model_error"
-
-    printm(filename)
-
-    # Open the file
-    with open(filename + '_summary.txt','w') as fh:
-        # Pass the file handle in as a lambda function to make it callable
-        m.summary(print_fn=lambda x: fh.write(x + '\n'))
-
-
-    x = np.random.rand(100,xs,ys,zs,1)
-    y = np.ones((100,xs,ys,zs,1))
+    x = np.random.rand(10,xs,ys,zs,1)
+    y = np.ones((10,xs,ys,zs,1))
 
     x = tf.convert_to_tensor(x)
     y = tf.convert_to_tensor(y)
 
     dataset = tf.data.Dataset.from_tensor_slices((x,y))
-    dataset = dataset.batch(1)
+    dataset = dataset.batch(2)
+
+    if distributed:
+        # Disable AutoShard.
+        options = tf.data.Options()
+        options.experimental_distribute.auto_shard_policy = tf.data.experimental.AutoShardPolicy.OFF
+        dataset = dataset.with_options(options)
 
     printm(filename)
 
@@ -166,21 +166,50 @@ def main():
         amsgrad=True)
 
     log_dir = "logs/fit/{}".format(filename) 
-    tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1, profile_batch = '50,52')
+    tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1, profile_batch = '1,10')
+    
+    if distributed:
+        with strategy.scope():
+            try:
+                m = unet3d((xs,ys,zs,1),depth)
+            except:
+                return "model_error"
 
-    m.compile(
+            printm(filename)
+
+            # Open the file
+            with open(filename + '_summary.txt','w') as fh:
+                # Pass the file handle in as a lambda function to make it callable
+                m.summary(print_fn=lambda x: fh.write(x + '\n'))
+            m.compile(loss=diceloss,
+            optimizer=adamlr,
+            metrics=[dice])
+    else:
+        try:
+            m = unet3d((xs,ys,zs,1),depth)
+        except:
+            return "model_error"
+
+        printm(filename)
+
+        # Open the file
+        with open(filename + '_summary.txt','w') as fh:
+            # Pass the file handle in as a lambda function to make it callable
+            m.summary(print_fn=lambda x: fh.write(x + '\n'))
+        m.compile(
             loss=diceloss,
             optimizer=adamlr, 
             metrics=[dice])
 
-    try:
+    #try:
+    if True:
         history=m.fit(
-            dataset, 
-            epochs=epochs,
-            verbose=0,
-            callbacks=[tensorboard_callback])
-    except:
-        return "fit_memory_error"
+                dataset, 
+                epochs=epochs,
+                verbose=0,
+                callbacks=[tensorboard_callback])
+    #except:
+    #    return "fit_memory_error"
     printm(filename)
 
     return "ok"
